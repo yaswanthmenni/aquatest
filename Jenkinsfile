@@ -13,8 +13,14 @@ pipeline {
     stage('Build Image'){
       steps{
         sh "docker build --tag yaswanthm/aquatest:latest ."
-        sh "docker push yaswanthm/aquatest:latest"
       }
     }
+    stage('Publish Image'){
+      steps{
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
+        sh "docker login -u $USERNAME -p $PASSWORD"
+        sh "docker push yaswanthm/aquatest:latest"
+      }}
     }
+  }
 }
